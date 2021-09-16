@@ -14,6 +14,8 @@ namespace ls
 			public:
 				int copyTo(char *text, int len) override;
 				int lengthOfString() override;
+				std::string encode(const std::string &text);
+				std::string decode(const std::string &text);
 			protected:
 				void parse(const std::string &text) override;
 				OrderedMap<std::string, std::string> om;

@@ -1,5 +1,6 @@
 #include "ls/http/Request.h"
 #include "ls/http/Response.h"
+#include "ls/http/QueryString.h"
 #include "ls/http/Code.h"
 #include "ls/Adapter.h"
 #include "ls/io/Factory.h"
@@ -64,5 +65,8 @@ int main(int argc, char **argv)
 	len = stoi(response.getAttribute("Content-Length"));
 	response.getBody() = in -> split(len);
 	LOGGER(ls::INFO) << "body:\n" << response.getBody() << ls::endl;
+// decode queryString
+	http::QueryString qs;
+	cout << qs.encode("AccessKeyId=e2xxxxxx-99xxxxxx-84xxxxxx-7xxxx&SignatureMethod=HmacSHA256&SignatureVersion=2&Timestamp=2017-05-11T15:19:30&order-id=1234567890") << endl;
 	return 0;
 }
