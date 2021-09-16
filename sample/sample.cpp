@@ -2,7 +2,6 @@
 #include "ls/http/Response.h"
 #include "ls/http/QueryString.h"
 #include "ls/http/Code.h"
-#include "ls/Adapter.h"
 #include "ls/io/Factory.h"
 #include "memory"
 
