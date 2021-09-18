@@ -85,5 +85,22 @@ namespace ls
 			buffer.pop(result);
 			return result;
 		}
+
+		string QueryString::getParameter(const string &key)
+		{
+			return om.get(key);
+		}
+
+		void QueryString::setParameter(const string &key, const string &value)
+		{
+			try
+			{
+				om.push(key, value);
+			}
+			catch(Exception &e)
+			{
+				om.replace(key, value);
+			}
+		}
 	}
 }

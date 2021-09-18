@@ -66,6 +66,11 @@ int main(int argc, char **argv)
 	LOGGER(ls::INFO) << "body:\n" << response.getBody() << ls::endl;
 // decode queryString
 	http::QueryString qs;
-	cout << qs.encode("AccessKeyId=e2xxxxxx-99xxxxxx-84xxxxxx-7xxxx&SignatureMethod=HmacSHA256&SignatureVersion=2&Timestamp=2017-05-11T15:19:30&order-id=1234567890") << endl;
+	qs.setParameter("AccessKeyId", "e2xxxxxx-99xxxxxx-84xxxxxx-7xxxx");
+	qs.setParameter("SignatureMethod", "HmacSHA256");
+	qs.setParameter("SignatureVersion", "2");
+	qs.setParameter("Timestamp", "2017-05-11T15:19:30");
+	qs.setParameter("order-id", "1234567890");
+	cout << qs.encode(qs.toString()) << endl;
 	return 0;
 }
