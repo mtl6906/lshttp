@@ -75,12 +75,13 @@ namespace ls
 		{
 			int los = rq.copyTo(text, len);
 			los += header.copyTo(text + los, len - los);
-			return los;
+			strncpy(text + los, body.c_str(), len - los);
+			return los + body.size();
 		}
 
 		int Request::lengthOfString()
 		{
-			return rq.lengthOfString() + header.lengthOfString();
+			return rq.lengthOfString() + header.lengthOfString() + body.size();
 		}
 
 		void Request::parse(const string &text)
