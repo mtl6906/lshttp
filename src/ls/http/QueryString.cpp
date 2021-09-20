@@ -23,14 +23,18 @@ namespace ls
 			int los = lengthOfString();
 			if(len < los)
 				throw Exception(Exception::LS_EFULL);
-			for(auto it : om.getData())
+			auto v = om.getData();
+			for(int i=0;i<v.size()-1;++i)
 			{
+				auto it = v[i];
 				text = api.append(text, it -> first.c_str());
 				text = api.append(text, "=");
 				text = api.append(text, it -> second.c_str());
 				text = api.append(text, "&");
 			}
-			*(text - 1) = '\0';
+			text = api.append(text, v.back() -> first.c_str());
+			text = api.append(text, "=");
+			text = api.append(text, v.back() -> second.c_str());
 			return los;
 		}
 
