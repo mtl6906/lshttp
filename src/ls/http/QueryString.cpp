@@ -4,7 +4,6 @@
 #include "sstream"
 
 using namespace std;
-using ls::cstring::api;
 
 namespace ls
 {
@@ -27,14 +26,14 @@ namespace ls
 			for(int i=0;i<v.size()-1;++i)
 			{
 				auto it = v[i];
-				text = api.append(text, it -> first.c_str());
-				text = api.append(text, "=");
-				text = api.append(text, it -> second.c_str());
-				text = api.append(text, "&");
+				text = cstring::api.append(text, it -> first.c_str());
+				text = cstring::api.append(text, "=");
+				text = cstring::api.append(text, it -> second.c_str());
+				text = cstring::api.append(text, "&");
 			}
-			text = api.append(text, v.back() -> first.c_str());
-			text = api.append(text, "=");
-			text = api.append(text, v.back() -> second.c_str());
+			text = cstring::api.append(text, v.back() -> first.c_str());
+			text = cstring::api.append(text, "=");
+			text = cstring::api.append(text, v.back() -> second.c_str());
 			return los;
 		}
 

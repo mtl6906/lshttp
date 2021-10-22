@@ -9,6 +9,7 @@
 #include "sys/stat.h"
 #include "fcntl.h"
 #include "unistd.h"
+#include "cstring"
 
 using namespace std;
 
@@ -38,9 +39,22 @@ namespace ls
 			return rs.version;
 		}
 
-		string &Response::getBody()
+		Body *Response::getBody()
 		{
-			return body;
+			return body.get();
+		}
+
+		void Response::setBody(Body *body)
+		{
+			this -> body.reset(body);
+			setAttribute("Content-Length", to_string(body -> getLength()));
+			setAttribute("Content-Type", body -> getType());
+		}
+
+		void Response::setCode(const string &code)
+		{
+			rs.code = code;
+			rs.message = codeMapper[code];
 		}
 
 		void Response::setAttribute(const string &key, const string &value)
@@ -68,12 +82,6 @@ namespace ls
 			header.push("Server", "LSS/1.0");
 			header.push("Date", time::api.getServerTime());
 			header.push("Connection", "close");
-			int split = req.getURL().find_last_of(".");
-			if(split != string::npos)
-			{
-				auto suffix = req.getURL().substr(split);
-				header.push("Content-Type", suffixmapper[suffix]);
-			}
 		}
 
 		void Response::parse(const string &text)
@@ -99,7 +107,7 @@ namespace ls
 
 		void Response::clear()
 		{
-			body = "";
+			body.reset(nullptr);
 			rs.clear();
 			header.clear();
 		}

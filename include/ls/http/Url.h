@@ -15,6 +15,7 @@ namespace ls
 				Url() = default;
 				Url(const std::string& url);
 				void clear();
+				void reset(std::vector<std::string> &part, const std::string &qs);
 				std::string url;
 				std::string uri;
 				std::string queryText;

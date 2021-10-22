@@ -21,12 +21,12 @@ namespace ls
 			int los = lengthOfString();
 			if(len < los)
 				throw Exception(Exception::LS_EFULL);
-			text = ls::cstring::api.append(text, version.c_str());
-			text = ls::cstring::api.append(text, " ");
-			text = ls::cstring::api.append(text, code.c_str());
-			text = ls::cstring::api.append(text, " ");
-			text = ls::cstring::api.append(text, message.c_str());
-			text = ls::cstring::api.append(text, "\r\n");
+			text = cstring::api.append(text, version.c_str());
+			text = cstring::api.append(text, " ");
+			text = cstring::api.append(text, code.c_str());
+			text = cstring::api.append(text, " ");
+			text = cstring::api.append(text, message.c_str());
+			text = cstring::api.append(text, "\r\n");
 			return los;
 		}
 

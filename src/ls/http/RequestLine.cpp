@@ -1,5 +1,6 @@
 #include "ls/http/RequestLine.h"
 #include "ls/cstring/API.h"
+#include "ls/http/Url.h"
 #include "ls/DefaultLogger.h"
 #include "ls/Exception.h"
 #include "sstream"
@@ -27,8 +28,10 @@ namespace ls
 			if(find(validMethod.begin(), validMethod.end(), method) == validMethod.end())
 				throw Exception(Exception::LS_EFORMAT);
 			iss >> url;
-			if(url.find("/../") != string::npos || url.substr(url.size() - 3, 3) == "/..")
-				throw Exception(Exception::LS_EFORMAT);
+			Url URL(url);
+			for(auto &p : URL.part)	
+				if(p == "..")
+					throw Exception(Exception::LS_EFORMAT);
 			iss >> version;
 			if(version != "HTTP/1.1")
 				throw Exception(Exception::LS_EFORMAT);

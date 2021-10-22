@@ -6,6 +6,7 @@
 #include "memory"
 #include "ls/http/RequestLine.h"
 #include "ls/http/Attribute.h"
+#include "ls/http/Body.h"
 #include "ls/DefaultLogger.h"
 
 extern std::map<int, std::string> codeMapper;
@@ -21,8 +22,9 @@ namespace ls
 				Request() = default;
 				std::string &getMethod();
 				std::string &getVersion();
-				std::string &getBody();
 				std::string &getURL();
+				Body *getBody();
+				void setBody(Body *body);
 				void setDefaultHeader();
 				std::string getAttribute(const std::string &key);
 				void setAttribute(const std::string &key, const std::string &value);
@@ -35,7 +37,7 @@ namespace ls
 				void parse(const std::string &text) override;
 				RequestLine rq;
 				Attribute header;
-				std::string body;
+				std::unique_ptr<Body> body;
 		};
 /*
 		struct _Request

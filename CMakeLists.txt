@@ -16,7 +16,7 @@ add_library(lshttp SHARED ${SRC})
 
 add_executable(testcase ${SRC} ${SRC_SAMPLE})
 
-target_link_libraries(testcase lsbuffer lslogger lsexception lsio lscstring lsitem lscopyableitem lstime)
+target_link_libraries(testcase lsbuffer lslogger lsexception lsio lscstring lsitem lscopyableitem lstime lsfile)
 
 
 install(TARGETS lshttp DESTINATION lib)

@@ -42,16 +42,23 @@ namespace ls
 			return rq.version;
 		}
 
-		string &Request::getBody()
+		Body *Request::getBody()
 		{
-			return body;
+			return body.get();
+		}
+
+		void Request::setBody(Body *body)
+		{
+			this -> body.reset(body);
+			setAttribute("Content-Length", to_string(body -> getLength()));
+			setAttribute("Content-Type", body -> getType());
 		}
 
 		void Request::clear()
 		{
 			rq.clear();
 			header.clear();
-			body = "";
+			body.reset(nullptr);
 		}
 
 		string Request::getAttribute(const string &key)
@@ -75,13 +82,12 @@ namespace ls
 		{
 			int los = rq.copyTo(text, len);
 			los += header.copyTo(text + los, len - los);
-			strncpy(text + los, body.c_str(), len - los);
-			return los + body.size();
+			return los;
 		}
 
 		int Request::lengthOfString()
 		{
-			return rq.lengthOfString() + header.lengthOfString() + body.size();
+			return rq.lengthOfString() + header.lengthOfString();
 		}
 
 		void Request::parse(const string &text)
@@ -90,7 +96,9 @@ namespace ls
 			buffer -> push(text);
 			unique_ptr<io::InputStream> in(io::factory.makeInputStream(nullptr, buffer));
 			rq.parseFrom(in -> split("\r\n", true));
+			LOGGER(ls::INFO) << "requestline parse ok..." << ls::endl;
 			header.parseFrom(in -> split("\r\n\r\n", true));
+			LOGGER(ls::INFO) << "header parse ok..." << ls::endl;
 		}
 
 /*
