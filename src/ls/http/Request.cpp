@@ -61,9 +61,24 @@ namespace ls
 			body.reset(nullptr);
 		}
 
+		string toLower(string text)
+		{
+			for(int i=0;i<text.size();++i)
+				if(text[i] >= 'A' && text[i] <= 'Z')
+					text[i] += 32;
+			return text;
+		}
+
 		string Request::getAttribute(const string &key)
 		{
-			return header.get(key);
+			try
+			{
+				return header.get(key);
+			}
+			catch(Exception &e)
+			{
+			}
+			return header.get(toLower(key));
 		}
 
 		void Request::setAttribute(const string &key, const string &value)

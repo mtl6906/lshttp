@@ -14,6 +14,9 @@ namespace ls
 		{
 			istringstream iss(text);
 			iss >> version >> code >> message;
+			string tmp;
+			while(iss >> tmp)
+				message = message + " " + tmp;
 		}
 
 		int ResponseLine::copyTo(char *text, int len)

@@ -12,6 +12,8 @@ namespace ls
 		class QueryString : public CopyableItem
 		{
 			public:
+				QueryString() = default;
+				QueryString(OrderedMap<std::string, std::string> &om);
 				int copyTo(char *text, int len) override;
 				int lengthOfString() override;
 				std::string encode(const std::string &text);

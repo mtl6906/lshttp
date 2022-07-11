@@ -9,6 +9,11 @@ namespace ls
 {
 	namespace http
 	{
+		QueryString::QueryString(OrderedMap<std::string, std::string> &om) : om(om)
+		{
+		
+		}
+
 		void QueryString::parse(const string &text)
 		{
 			istringstream iss(text);
