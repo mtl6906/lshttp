@@ -33,14 +33,8 @@ namespace ls
 
 		void Cookie::setCookie(const string &key, const string &value)
 		{
-			try
-			{
-				om.push(key, value);
-			}
-			catch(Exception &e)
-			{
+			if(om.push(key, value) < 0)
 				om.replace(key, value);
-			}
 		}
 
 		void Cookie::setHttpOnly(bool httpOnly)
@@ -52,7 +46,7 @@ namespace ls
 		{
 			int los = lengthOfString();
 			if(len < los)
-				throw Exception(Exception::LS_EFULL);
+				return Exception::LS_EFULL;
 			for(auto &it : om.getData())
 			{
 				text = cstring::api.append(text, it -> first.c_str());
@@ -111,7 +105,7 @@ namespace ls
 			return len;
 		}
 
-		void Cookie::parse(const string &data)
+		int Cookie::parse(const string &data)
 		{
 			istringstream sin(data);
 			string key, value, p;
@@ -121,11 +115,12 @@ namespace ls
 				if(getline(sin, key, '=') && getline(sinp, value, ';'))
 					setCookie(key, value);
 			}
+			return Exception::LS_OK;
 		}
 
-		string Cookie::getCookie(const string &key)
+		string Cookie::getCookie(int &ec, const string &key)
 		{
-			return om.get(key);
+			return om.get(ec, key);
 		}
 	}
 }

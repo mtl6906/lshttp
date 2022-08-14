@@ -25,12 +25,12 @@ namespace ls
 				void setBody(Body *body);
 				void setDefaultHeader(Request &req);
 				void setAttribute(const std::string &key, const std::string &value);
-				std::string getAttribute(const std::string &key);
+				std::string getAttribute(int &ec, const std::string &key);
 				void clear();
 				int copyTo(char *text, int len) override;
 				int lengthOfString() override;
 			protected:
-				void parse(const std::string &text) override;
+				int parse(const std::string &text) override;
 				ResponseLine rs;
 				Attribute header;
 				std::unique_ptr<Body> body;

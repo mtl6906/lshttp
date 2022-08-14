@@ -59,19 +59,13 @@ namespace ls
 
 		void Response::setAttribute(const string &key, const string &value)
 		{
-			try
-			{
-				header.push(key, value);
-			}
-			catch(Exception &e)
-			{
+			if(header.push(key, value) < 0)
 				header.replace(key, value);
-			}
 		}
 
-		string Response::getAttribute(const string &key)
+		string Response::getAttribute(int &ec, const string &key)
 		{
-			return header.get(key);
+			return header.get(ec, key);
 		}
 
 		void Response::setDefaultHeader(Request &req)
@@ -81,16 +75,30 @@ namespace ls
 			header.push("Content-Encoding", "identity");
 			header.push("Server", "LSS/1.0");
 			header.push("Date", time::api.getServerTime());
-			header.push("Connection", "close");
+			int ec;
+			auto keepalive = req.getAttribute(ec, "Connection");
+			if(ec < 0)
+				header.push("Connection", "close");
+			else
+				header.push("Connection", keepalive);
 		}
 
-		void Response::parse(const string &text)
+		int Response::parse(const string &text)
 		{
-			Buffer *buffer = new Buffer(text.size());
+			int ec = Exception::LS_OK;
+			unique_ptr<Buffer> buffer(new Buffer(text.size()));
 			buffer -> push(text);
-			unique_ptr<io::InputStream> in(io::factory.makeInputStream(nullptr, buffer));
-			rs.parseFrom(in -> split("\r\n", true));
-			header.parseFrom(in -> split("\r\n\r\n", true));
+			unique_ptr<io::InputStream> in(io::factory.makeInputStream(nullptr, buffer.get()));
+			auto rstext = in -> split(ec, "\r\n", true);
+			if(ec < 0)
+				return ec;
+			ec = rs.parseFrom(rstext);
+			if(ec < 0)
+				return ec;
+			auto headertext =in -> split(ec, "\r\n\r\n", true);
+			if(ec < 0)
+				return ec;
+			return header.parseFrom(headertext);
 		}
 
 		int Response::copyTo(char *text, int len)

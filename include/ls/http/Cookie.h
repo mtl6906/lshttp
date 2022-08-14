@@ -18,11 +18,11 @@ namespace ls
                 void setSecure(bool secure);
                 void setHttpOnly(bool httpOnly);
                 void setCookie(const std::string &key, const std::string &value);
-                std::string getCookie(const std::string &key);
+                std::string getCookie(int &ec, const std::string &key);
                 int copyTo(char *text, int len) override;
                 int lengthOfString() override;
             protected:
-                void parse(const std::string &text)override;
+                int parse(const std::string &text)override;
                 OrderedMap<std::string, std::string> om;
                 std::string expire;
                 std::string path;

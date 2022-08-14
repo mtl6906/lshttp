@@ -12,14 +12,14 @@ namespace ls
 		{
 			public:
 				Attribute();
-				void replace(const std::string &key, const std::string &value);
-				void push(const std::string &key, const std::string &value);
-				std::string get(const std::string &key);
+				int replace(const std::string &key, const std::string &value);
+				int push(const std::string &key, const std::string &value);
+				std::string get(int &ec, const std::string &key);
 				void clear();
 				int copyTo(char *text, int len) override;
 				int lengthOfString() override;
 			protected:
-				void parse(const std::string &text) override;
+				int parse(const std::string &text) override;
 				OrderedMap<std::string, std::string> attribute;
 		};
 	}

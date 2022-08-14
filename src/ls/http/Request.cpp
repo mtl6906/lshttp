@@ -69,28 +69,19 @@ namespace ls
 			return text;
 		}
 
-		string Request::getAttribute(const string &key)
+		string Request::getAttribute(int &ec, const string &key)
 		{
-			try
-			{
-				return header.get(key);
-			}
-			catch(Exception &e)
-			{
-			}
-			return header.get(toLower(key));
+			ec = Exception::LS_OK;
+			auto text = header.get(ec, key);
+			if(ec < 0)
+				return header.get(ec, toLower(key));
+			return text;
 		}
 
 		void Request::setAttribute(const string &key, const string &value)
 		{
-			try
-			{
-				header.push(key, value);
-			}
-			catch(Exception &e)
-			{
+			if(header.push(key, value) < 0)
 				header.replace(key, value);
-			}
 		}
 
 		int Request::copyTo(char *text, int len)
@@ -105,15 +96,25 @@ namespace ls
 			return rq.lengthOfString() + header.lengthOfString();
 		}
 
-		void Request::parse(const string &text)
+		int Request::parse(const string &text)
 		{
-			Buffer *buffer = new Buffer(text.size());
+			int ec = Exception::LS_OK;
+			unique_ptr<Buffer> buffer(new Buffer(text.size()));
 			buffer -> push(text);
-			unique_ptr<io::InputStream> in(io::factory.makeInputStream(nullptr, buffer));
-			rq.parseFrom(in -> split("\r\n", true));
+			unique_ptr<io::InputStream> in(io::factory.makeInputStream(nullptr, buffer.get()));
+			auto rqtext = in -> split(ec, "\r\n", true);
+			if(ec < 0)
+				return ec;
+			ec = rq.parseFrom(rqtext);
+			if(ec < 0)
+				return  ec;
 			LOGGER(ls::INFO) << "requestline parse ok..." << ls::endl;
-			header.parseFrom(in -> split("\r\n\r\n", true));
+			auto headertext = in -> split(ec, "\r\n\r\n", true);
+			if(ec< 0)
+				return ec;
+			ec = header.parseFrom(headertext);
 			LOGGER(ls::INFO) << "header parse ok..." << ls::endl;
+			return ec;
 		}
 
 /*

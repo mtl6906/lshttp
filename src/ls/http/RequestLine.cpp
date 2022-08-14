@@ -21,23 +21,24 @@ namespace ls
 {
 	namespace http
 	{
-		void RequestLine::parse(const string &text)
+		int RequestLine::parse(const string &text)
 		{
 			istringstream iss(text);
 			iss >> method;
 			if(find(validMethod.begin(), validMethod.end(), method) == validMethod.end())
-				throw Exception(Exception::LS_EFORMAT);
+				return Exception::LS_EFORMAT;
 			iss >> url;
 			Url URL(url);
 			for(auto &p : URL.part)	
 				if(p == "..")
-					throw Exception(Exception::LS_EFORMAT);
+					return Exception::LS_EFORMAT;
 			iss >> version;
-			if(version != "HTTP/1.1")
-				throw Exception(Exception::LS_EFORMAT);
+			if(version != "HTTP/1.1" && version != "HTTP/1.0")
+				return Exception::LS_EFORMAT;
 			LOGGER(ls::INFO) << "method: " << method << ls::endl;
 			LOGGER(ls::INFO) << "url: " << url << ls::endl;
 			LOGGER(ls::INFO) << "version: " << version << ls::endl;
+			return Exception::LS_OK;
 		}
 
 		int RequestLine::lengthOfString()
@@ -49,7 +50,7 @@ namespace ls
 		{
 			int los = lengthOfString();
 			if(len < los)
-				throw Exception(Exception::LS_EFULL);
+				return Exception::LS_EFULL;
 			text = api.append(text, method.c_str());
 			text = api.append(text, " ");
 			text = api.append(text, url.c_str());

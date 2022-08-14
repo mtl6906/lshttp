@@ -29,10 +29,10 @@ namespace ls
 			}
 			LOGGER(ls::INFO) << "url: " << url << ls::endl;
 			LOGGER(ls::INFO) << "uri: " << uri << ls::endl;
-			LOGGER(ls::INFO) << "part: [";
-			for(int i=0;i<part.size();++i)
-					logger << " " << part[i] << " ";
-			logger << "]" << ls::endl;
+//			LOGGER(ls::INFO) << "part: [";
+//			for(int i=0;i<part.size();++i)
+//					logger << " " << part[i] << " ";
+//			logger << "]" << ls::endl;
 		}
 
 		int Url::splitQueryText()

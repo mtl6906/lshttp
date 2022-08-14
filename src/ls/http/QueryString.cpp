@@ -14,19 +14,20 @@ namespace ls
 		
 		}
 
-		void QueryString::parse(const string &text)
+		int QueryString::parse(const string &text)
 		{
 			istringstream iss(text);
 			string key, value;
 			while(getline(iss, key, '=') && getline(iss, value, '&'))
 				om.push(key, value);
+			return Exception::LS_OK;
 		}
 
 		int QueryString::copyTo(char *text, int len)
 		{
 			int los = lengthOfString();
 			if(len < los)
-				throw Exception(Exception::LS_EFULL);
+				return Exception::LS_EFULL;
 			auto v = om.getData();
 			for(int i=0;i<v.size()-1;++i)
 			{
@@ -94,21 +95,20 @@ namespace ls
 			return result;
 		}
 
-		string QueryString::getParameter(const string &key)
+		string QueryString::getParameter(int &ec, const string &key)
 		{
-			return om.get(key);
+			return om.get(ec, key);
 		}
 
 		void QueryString::setParameter(const string &key, const string &value)
 		{
-			try
-			{
-				om.push(key, value);
-			}
-			catch(Exception &e)
-			{
+			if(om.push(key, value) < 0)
 				om.replace(key, value);
-			}
+		}
+
+		OrderedMap<string, string> &QueryString::getData()
+		{
+			return om;
 		}
 	}
 }

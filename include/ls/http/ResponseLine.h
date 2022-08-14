@@ -18,7 +18,7 @@ namespace ls
 				std::string code;
 				std::string message;
 			protected:
-				void parse(const std::string &text) override;
+				int parse(const std::string &text) override;
 		};
 	}
 }

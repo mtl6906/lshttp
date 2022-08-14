@@ -18,10 +18,11 @@ namespace ls
 				int lengthOfString() override;
 				std::string encode(const std::string &text);
 				std::string decode(const std::string &text);
-				std::string getParameter(const std::string &key);
+				std::string getParameter(int &ec, const std::string &key);
 				void setParameter(const std::string &key, const std::string &value);
+				OrderedMap<std::string, std::string> &getData();
 			protected:
-				void parse(const std::string &text) override;
+				int parse(const std::string &text) override;
 				OrderedMap<std::string, std::string> om;
 		};
 	}

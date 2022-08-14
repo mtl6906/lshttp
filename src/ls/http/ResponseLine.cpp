@@ -10,20 +10,21 @@ namespace ls
 {
 	namespace http
 	{
-		void ResponseLine::parse(const string &text)
+		int ResponseLine::parse(const string &text)
 		{
 			istringstream iss(text);
 			iss >> version >> code >> message;
 			string tmp;
 			while(iss >> tmp)
 				message = message + " " + tmp;
+			return Exception::LS_OK;
 		}
 
 		int ResponseLine::copyTo(char *text, int len)
 		{
 			int los = lengthOfString();
 			if(len < los)
-				throw Exception(Exception::LS_EFULL);
+				return Exception::LS_EFULL;
 			text = cstring::api.append(text, version.c_str());
 			text = cstring::api.append(text, " ");
 			text = cstring::api.append(text, code.c_str());

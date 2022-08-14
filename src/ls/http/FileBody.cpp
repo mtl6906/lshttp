@@ -13,8 +13,6 @@ namespace ls
 		{
 			if(file::api.exist(filename))
 				file = file::api.get(filename);
-			else
-				throw Exception(Exception::LS_EEXIST);
 		}
 
 		FileBody::~FileBody()

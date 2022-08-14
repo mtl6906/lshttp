@@ -36,11 +36,12 @@ int main(int argc, char **argv)
 	buffer -> push(body);
 	io::InputStream in(nullptr, buffer);
 	request.clear();
-	text = in.split("\r\n\r\n", true);
+	int ec;
+	text = in.split(ec, "\r\n\r\n", true);
 	request.parseFrom(text);
 	LOGGER(ls::INFO) << "requestline and header: \n" << text << ls::endl;
-	int len = stoi(request.getAttribute("Content-Length"));
-	request.setBody(new http::StringBody(in.split(len), request.getAttribute("Content-Type")));
+	int len = stoi(request.getAttribute(ec, "Content-Length"));
+	request.setBody(new http::StringBody(in.split(ec, len), request.getAttribute(ec, "Content-Type")));
 	request.getBody() -> getData(&body);
 	LOGGER(ls::INFO) << "body: \n" << body << ls::endl;
 // encode response
@@ -61,11 +62,11 @@ int main(int argc, char **argv)
 	buffer -> push(text);
 	buffer -> push(body);
 	response.clear();
-	text = in.split("\r\n\r\n", true);
+	text = in.split(ec, "\r\n\r\n", true);
 	response.parseFrom(text);
 	LOGGER(ls::INFO) << "responseline and header:\n" << response.toString() << ls::endl;
-	len = stoi(response.getAttribute("Content-Length"));
-	response.setBody(new http::StringBody(in.split(len), response.getAttribute("Content-Type")));
+	len = stoi(response.getAttribute(ec, "Content-Length"));
+	response.setBody(new http::StringBody(in.split(ec, len), response.getAttribute(ec, "Content-Type")));
 	response.getBody() -> getData(&body);
 	LOGGER(ls::INFO) << "body:\n" << body << ls::endl;
 // decode queryString

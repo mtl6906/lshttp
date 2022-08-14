@@ -19,7 +19,7 @@ namespace ls
 				std::string url;
 				std::string version;
 			protected:
-				void parse(const std::string &text);
+				int parse(const std::string &text);
 		};
 
 	}

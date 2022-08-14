@@ -26,7 +26,7 @@ namespace ls
 				Body *getBody();
 				void setBody(Body *body);
 				void setDefaultHeader();
-				std::string getAttribute(const std::string &key);
+				std::string getAttribute(int &ec, const std::string &key);
 				void setAttribute(const std::string &key, const std::string &value);
 				void clear();
 				int copyTo(char *text, int len) override;
@@ -34,7 +34,7 @@ namespace ls
 //				friend io::InputStream *operator>>(io::InputStream *in, Request &request);
 //				friend io::OutputStream *operator<<(io::OutputStream *out, Request &request);
 			protected:
-				void parse(const std::string &text) override;
+				int parse(const std::string &text) override;
 				RequestLine rq;
 				Attribute header;
 				std::unique_ptr<Body> body;

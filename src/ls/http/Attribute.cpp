@@ -16,7 +16,7 @@ namespace ls
 
 		}
 
-		void Attribute::parse(const string &text)
+		int Attribute::parse(const string &text)
 		{
 			istringstream iss(text);
 			string key, value;
@@ -26,13 +26,14 @@ namespace ls
 				value.pop_back();
 				attribute.push(key, value);
 			}
+			return Exception::LS_OK;
 		}
 
 		int Attribute::copyTo(char *text, int len)
 		{
 			int los = lengthOfString();
 			if(len < los)
-				throw Exception(Exception::LS_EFULL);
+				return Exception::LS_EFULL;
 			for(auto &it : attribute.getData())
 			{
 				text = cstringAPI.append(text, it -> first.c_str());
@@ -52,19 +53,19 @@ namespace ls
 			return len;
 		}
 
-		void Attribute::push(const string &key, const string &value)
+		int Attribute::push(const string &key, const string &value)
 		{
-			attribute.push(key, value);
+			return attribute.push(key, value);
 		}
 
-		void Attribute::replace(const string &key, const string &value)
+		int Attribute::replace(const string &key, const string &value)
 		{
-			attribute.replace(key, value);
+			return attribute.replace(key, value);
 		}
 
-		string Attribute::get(const string &key)
+		string Attribute::get(int &ec, const string &key)
 		{
-			return attribute.get(key);
+			return attribute.get(ec, key);
 		}
 
 		void Attribute::clear()
