@@ -6,7 +6,6 @@
 #include "memory"
 #include "ls/http/RequestLine.h"
 #include "ls/http/Attribute.h"
-#include "ls/http/Body.h"
 #include "ls/DefaultLogger.h"
 
 extern std::map<int, std::string> codeMapper;

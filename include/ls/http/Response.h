@@ -7,7 +7,6 @@
 #include "ls/CopyableItem.h"
 #include "ls/file/File.h"
 #include "ls/time/API.h"
-#include "ls/http/Body.h"
 #include "ls/Buffer.h"
 #include "map"
 #include "memory"
