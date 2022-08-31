@@ -1,7 +1,9 @@
 #include "ls/http/Response.h"
 #include "ls/http/Code.h"
+#include "ls/http/Type.h"
 #include "ls/cstring/API.h"
 #include "ls/time/API.h"
+#include "ls/file/API.h"
 #include "ls/Exception.h"
 #include "ls/io/Factory.h"
 #include "sstream"
@@ -17,6 +19,12 @@ namespace ls
 {
 	namespace http
 	{
+		string Response::defaultHeader = "Content-Encoding: identity\r\nServer: LSS/1.0\r\n";
+
+		Response::Response(Buffer *buffer) : buffer(buffer)
+		{
+		}
+
 		map<string, string> suffixmapper = {
 			{".html", "text/html"},
 			{".css", "text/css"},
@@ -39,48 +47,83 @@ namespace ls
 			return rs.version;
 		}
 
-		Body *Response::getBody()
+		string &Response::getBody()
 		{
-			return body.get();
+			return body;
 		}
 
-		void Response::setBody(Body *body)
+		file::File *Response::getFile()
 		{
-			this -> body.reset(body);
-			setAttribute("Content-Length", to_string(body -> getLength()));
-			setAttribute("Content-Type", body -> getType());
+			return file;
 		}
 
-		void Response::setCode(const string &code)
+		void Response::reset(Buffer *buffer)
 		{
-			rs.code = code;
-			rs.message = codeMapper[code];
+			this -> buffer = buffer;
+		}
+		
+		void Response::setResponseLine(const string &code, const string &version)
+		{
+			buffer -> push(version);
+			buffer -> push(" ");
+			buffer -> push(code);
+			buffer -> push(" ");
+			buffer -> push(codeMapper[code]);
+			buffer -> push("\r\n");
+			buffer -> push(defaultHeader);
 		}
 
 		void Response::setAttribute(const string &key, const string &value)
 		{
-			if(header.push(key, value) < 0)
-				header.replace(key, value);
+			buffer -> push(key);
+			buffer -> push(": ");
+			buffer -> push(value);
+			buffer -> push("\r\n");
 		}
 
-		string Response::getAttribute(int &ec, const string &key)
+		void Response::setStringBody(const string& text, const string &type)
 		{
+
+			setAttribute("Content-Length", to_string(text.size()));
+			setAttribute("Content-Type", type);
+			setAttribute("Date", time::api.getServerTime());
+		//	setAttribute("Date", time::api.getServerTime());
+			buffer -> push("\r\n");
+			buffer -> push(text);
+/*
+			buffer -> push("Content-Type");
+			buffer -> push(": ");
+			buffer -> push(type);
+			buffer -> push("\r\n");
+			
+	                buffer -> push("Content-Length");
+			buffer -> push(":");
+			buffer -> push(to_string(text.size()));
+			buffer -> push("\r\n");
+			buffer -> push("\r\n");
+			buffer -> push(text);
+*/			
+		}
+
+		void Response::setFileBody(const string &pathname)
+		{
+			if(file::api.exist(pathname))
+				file = file::api.get(pathname);
+			setAttribute("Content-Length", to_string(file -> size()));
+			setAttribute("Content-Type", getTypeByFilename(pathname));
+			setAttribute("Date", time::api.getServerTime());
+			buffer -> push("\r\n");
+		}
+
+		string Response::getAttribute(const string &key)
+		{
+			int ec;
 			return header.get(ec, key);
 		}
 
-		void Response::setDefaultHeader(Request &req)
+		void Response::setHeaderByRequest(Request &request)
 		{
-			getVersion() = req.getVersion();
-			header.clear();
-			header.push("Content-Encoding", "identity");
-			header.push("Server", "LSS/1.0");
-			header.push("Date", time::api.getServerTime());
-			int ec;
-			auto keepalive = req.getAttribute(ec, "Connection");
-			if(ec < 0)
-				header.push("Connection", "close");
-			else
-				header.push("Connection", keepalive);
+			setAttribute("Connection", request.getConnection());
 		}
 
 		int Response::parse(const string &text)
@@ -115,9 +158,11 @@ namespace ls
 
 		void Response::clear()
 		{
-			body.reset(nullptr);
+			buffer = nullptr;
+			file = nullptr;
 			rs.clear();
 			header.clear();
+			body = "";
 		}
 	}
 }

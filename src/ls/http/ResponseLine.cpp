@@ -10,6 +10,14 @@ namespace ls
 {
 	namespace http
 	{
+		ResponseLine::ResponseLine(const string &code, const string &version) : 
+												code(code), 
+												message(codeMapper[code]), 
+												version(version)
+		{
+			
+		}
+		
 		int ResponseLine::parse(const string &text)
 		{
 			istringstream iss(text);

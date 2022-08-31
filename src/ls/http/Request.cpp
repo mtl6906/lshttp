@@ -42,23 +42,23 @@ namespace ls
 			return rq.version;
 		}
 
-		Body *Request::getBody()
+		std::string &Request::getBody()
 		{
-			return body.get();
+			return body;
 		}
 
-		void Request::setBody(Body *body)
+		void Request::setBody(const string &body, const string &type)
 		{
-			this -> body.reset(body);
-			setAttribute("Content-Length", to_string(body -> getLength()));
-			setAttribute("Content-Type", body -> getType());
+			this -> body = body;
+			setAttribute("Content-Length", to_string(body.size()));
+			setAttribute("Content-Type", type);
 		}
 
 		void Request::clear()
 		{
 			rq.clear();
 			header.clear();
-			body.reset(nullptr);
+			body = "";
 		}
 
 		string toLower(string text)
@@ -69,13 +69,19 @@ namespace ls
 			return text;
 		}
 
-		string Request::getAttribute(int &ec, const string &key)
+		string Request::getAttribute(const string &key)
 		{
-			ec = Exception::LS_OK;
+			int ec;
 			auto text = header.get(ec, key);
-			if(ec < 0)
-				return header.get(ec, toLower(key));
-			return text;
+			if(ec == Exception::LS_OK)
+				return text;
+			return header.get(ec, toLower(key));
+		}
+
+		string Request::getConnection()
+		{
+			auto connection = getAttribute("Connection");
+			return connection == "" ? "close" : connection;
 		}
 
 		void Request::setAttribute(const string &key, const string &value)

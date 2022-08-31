@@ -95,8 +95,9 @@ namespace ls
 			return result;
 		}
 
-		string QueryString::getParameter(int &ec, const string &key)
+		string QueryString::getParameter(const string &key)
 		{
+			int ec;
 			return om.get(ec, key);
 		}
 

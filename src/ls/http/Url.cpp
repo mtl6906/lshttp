@@ -34,7 +34,7 @@ namespace ls
 //					logger << " " << part[i] << " ";
 //			logger << "]" << ls::endl;
 		}
-
+		
 		int Url::splitQueryText()
 		{
 			int n = url.find_first_of("?");
@@ -68,7 +68,7 @@ namespace ls
 				buffer.push("?", 1);
 				buffer.push(qs);
 			}
-			*this = Url(buffer.getData());
+			*this = std::move(Url(buffer.getData()));
 		}
 
 		void Url::splitPart()

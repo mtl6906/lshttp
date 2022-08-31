@@ -11,11 +11,12 @@ namespace ls
 		{
 			public:
 				ResponseLine() = default;
+				ResponseLine(const std::string &code, const std::string &version);
 				void clear();
 				int copyTo(char *text, int len) override;
 				int lengthOfString() override;
-				std::string version;
 				std::string code;
+				std::string version;
 				std::string message;
 			protected:
 				int parse(const std::string &text) override;

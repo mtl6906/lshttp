@@ -14,6 +14,8 @@ namespace ls
 			public:
 				Url() = default;
 				Url(const std::string& url);
+				Url(Url &&o) = default;
+				Url &operator=(Url &&o) = default;
 				void clear();
 				void reset(std::vector<std::string> &part, const std::string &qs);
 				std::string url;

@@ -23,10 +23,11 @@ namespace ls
 				std::string &getMethod();
 				std::string &getVersion();
 				std::string &getURL();
-				Body *getBody();
-				void setBody(Body *body);
+				std::string &getBody();
+				void setBody(const std::string &body, const std::string &type);
 				void setDefaultHeader();
-				std::string getAttribute(int &ec, const std::string &key);
+				std::string getConnection();
+				std::string getAttribute(const std::string &key);
 				void setAttribute(const std::string &key, const std::string &value);
 				void clear();
 				int copyTo(char *text, int len) override;
@@ -37,7 +38,7 @@ namespace ls
 				int parse(const std::string &text) override;
 				RequestLine rq;
 				Attribute header;
-				std::unique_ptr<Body> body;
+				std::string body;
 		};
 /*
 		struct _Request
